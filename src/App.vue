@@ -9,16 +9,14 @@
       <p class="header-subtitle">
         using
         <a href="https://github.com/algolia/vue-instantsearch">
-          Vue InstantSearch
+          Vue InstantSearch + Typesense Instantsearch adapter
         </a>
       </p>
     </header>
 
     <div class="container">
-      <ais-instant-search
-        :search-client="searchClient"
-        index-name="instant_search"
-      >
+      <ais-instant-search :search-client="searchClient" index-name="books">
+        <ais-configure :hits-per-page.camel="8" />
         <div class="search-panel">
           <div class="search-panel__results">
             <div class="searchbox">
@@ -27,12 +25,35 @@
             <ais-hits>
               <template slot="item" slot-scope="{ item }">
                 <article>
+                  <img
+                    :src="item['image_url']"
+                    :alt="item['name']"
+                    height="100"
+                  />
                   <h1>
-                    <ais-highlight :hit="item" attribute="name" />
+                    <ais-highlight
+                      :hit="item"
+                      attribute="title"
+                      class="hit-name"
+                    />
                   </h1>
-                  <p>
-                    <ais-highlight :hit="item" attribute="description" />
-                  </p>
+                  <div class="hit-authors">
+                    <span
+                      v-for="(fieldValue, index) in item['authors']"
+                      :key="`highlight-${fieldValue}-${index}`"
+                    >
+                      <ais-highlight
+                        :hit="item"
+                        :attribute="`authors.${index}`"
+                      /><template v-if="index < item['authors'].length - 1"
+                        >,
+                      </template>
+                    </span>
+                  </div>
+                  <div class="hit-publication-year">
+                    {{ item['publication_year'] }}
+                  </div>
+                  <div class="hit-rating">{{ item['average_rating'] }}/5</div>
                 </article>
               </template>
             </ais-hits>
@@ -48,15 +69,33 @@
 </template>
 
 <script>
-import algoliasearch from 'algoliasearch/lite';
+import TypesenseInstantSearchAdapter from 'typesense-instantsearch-adapter';
+
+const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
+  server: {
+    apiKey: 'xyz', // Be sure to use an API key that only allows searches, in production
+    nodes: [
+      {
+        host: 'localhost',
+        port: '8108',
+        protocol: 'http',
+      },
+    ],
+  },
+  // The following parameters are directly passed to Typesense's search API endpoint.
+  //  So you can pass any parameters supported by the search endpoint below.
+  //  queryBy is required.
+  //  filterBy is managed and overridden by InstantSearch.js. To set it, you want to use one of the filter widgets like refinementList or use the `configure` widget.
+  additionalSearchParameters: {
+    queryBy: 'title,authors',
+  },
+});
+const searchClient = typesenseInstantsearchAdapter.searchClient;
 
 export default {
   data() {
     return {
-      searchClient: algoliasearch(
-        'latency',
-        '6be0576ff61c053d5f9a3225e2a90f76'
-      ),
+      searchClient,
     };
   },
 };
@@ -126,6 +165,11 @@ em {
   flex: 3;
 }
 
+.ais-Highlight-highlighted {
+  color: inherit;
+  font-size: inherit;
+}
+
 .searchbox {
   margin-bottom: 2rem;
 }
@@ -133,5 +177,32 @@ em {
 .pagination {
   margin: 2rem auto;
   text-align: center;
+}
+
+.hit-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.hit-authors {
+  margin-top: 3px;
+  font-size: 0.8rem;
+}
+
+.hit-publication-year {
+  font-size: 0.8rem;
+  margin-top: 20px;
+}
+
+.hit-rating {
+  margin-top: 3px;
+  font-size: 0.8rem;
+}
+
+.ais-Hits-item {
+  padding: 30px;
+  box-shadow: none;
+  border: 1px solid lighten(lightgray, 8%);
 }
 </style>

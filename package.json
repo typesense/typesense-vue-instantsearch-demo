@@ -6,12 +6,14 @@
     "start": "vue-cli-service serve --port 3000",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "typesenseServer": "docker run -i -p 8108:8108 -v/tmp/typesense-server-data-1c/:/data typesense/typesense:0.20.0 --data-dir /data --api-key=xyz --listen-port 8108 --enable-cors",
+    "populateTypesenseIndex": "node populateTypesenseIndex.js"
   },
   "dependencies": {
-    "algoliasearch": "4.6.0",
     "core-js": "2.6.9",
-    "vue": "2.6.10",
+    "typesense-instantsearch-adapter": "^1.2.2",
+    "vue": "2.6.14",
     "vue-instantsearch": "3.7.0"
   },
   "devDependencies": {
@@ -26,7 +28,7 @@
     "eslint-plugin-prettier": "3.1.2",
     "eslint-plugin-vue": "5.2.2",
     "prettier": "1.19.1",
-    "vue-template-compiler": "2.6.10"
+    "vue-template-compiler": "2.6.14"
   },
   "browserslist": [
     "> 1%",
