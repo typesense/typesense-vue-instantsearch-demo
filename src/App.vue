@@ -15,8 +15,12 @@
     </header>
 
     <div class="container">
-      <ais-instant-search :search-client="searchClient" index-name="books">
-        <ais-configure :hits-per-page.camel="8" />
+      <ais-instant-search
+        :search-client="searchClient"
+        index-name="books"
+        :search-function="searchFunction"
+      >
+        <ais-configure v-bind="searchParameters" />
         <div class="search-panel">
           <div class="search-panel__filters">
             <h4>Author</h4>
@@ -103,6 +107,13 @@ export default {
   data() {
     return {
       searchClient,
+      searchParameters: {
+        hitsPerPage: 8,
+        facets: ['authors'],
+      },
+      searchFunction(helper) {
+        helper.addFacetRefinement('authors', 'Suzanne Collins').search();
+      },
     };
   },
 };
