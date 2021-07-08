@@ -18,6 +18,13 @@
       <ais-instant-search :search-client="searchClient" index-name="books">
         <ais-configure :hits-per-page.camel="8" />
         <div class="search-panel">
+          <div class="search-panel__filters">
+            <h4>Author</h4>
+            <ais-refinement-list attribute="authors" />
+
+            <h4>Year</h4>
+            <ais-refinement-list attribute="publication_year" />
+          </div>
           <div class="search-panel__results">
             <div class="searchbox">
               <ais-search-box placeholder="" />
