@@ -111,10 +111,12 @@ export default {
         hitsPerPage: 8,
         facets: ['authors'],
       },
-      searchFunction(helper) {
-        helper.addFacetRefinement('authors', 'Suzanne Collins').search();
-      },
     };
+  },
+  methods: {
+    searchFunction(helper) {
+      helper.addFacetRefinement('authors', 'Suzanne Collins').search();
+    },
   },
 };
 </script>
