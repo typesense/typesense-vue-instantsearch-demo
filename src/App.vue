@@ -109,13 +109,16 @@ export default {
       searchClient,
       searchParameters: {
         hitsPerPage: 8,
-        facets: ['authors'],
+        facets: ['authors', 'publication_year'],
       },
     };
   },
   methods: {
     searchFunction(helper) {
-      helper.addFacetRefinement('authors', 'Suzanne Collins').search();
+      helper
+        .addFacetRefinement('authors', 'Suzanne Collins')
+        .addNumericRefinement('publication_year', '>=', 2004)
+        .search();
     },
   },
 };
