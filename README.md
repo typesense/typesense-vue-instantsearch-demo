@@ -13,6 +13,7 @@ Here are more live demos that use the Instantsearch adapter: [https://typesense.
 To run this project locally, install the dependencies, start Typesense Server, populate the index and run the app server:
 
 ```sh
+$ nvm use
 $ npm install
 $ npm run typesenseServer
 ```
