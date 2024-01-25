@@ -30,13 +30,13 @@
               <ais-search-box placeholder="" />
             </div>
             <ais-hits>
-              <template slot="item" slot-scope="{ item }">
-                <article>
-                  <img
-                    :src="item['image_url']"
-                    :alt="item['name']"
-                    height="100"
-                  />
+              <template #default="{ items }">
+                <article
+                  v-for="item in items"
+                  :key="item.id"
+                  style="display: inline-block;width: 25%"
+                >
+                  <img :src="item.image_url" :alt="item.name" height="100" />
                   <h1>
                     <ais-highlight
                       :hit="item"
